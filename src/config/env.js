@@ -14,9 +14,14 @@ const requiredEnvVars = [
 
 // Validation des variables d'environnement
 function validateEnv() {
-  // TODO: Implémenter la validation
-  // Si une variable manque, lever une erreur explicative
+  const missingVars = requiredEnvVars.filter((envVar) => !process.env[envVar]);
+  if (missingVars.length > 0) {
+    throw new Error(`Les variables d'environnement suivantes sont manquantes : ${missingVars.join(', ')}`);
+  }
 }
+
+validateEnv();
+
 
 module.exports = {
   mongodb: {
