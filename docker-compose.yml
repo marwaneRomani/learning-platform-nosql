@@ -1,0 +1,72 @@
+services:
+  learning_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: learning-app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - database
+      - redis_cache
+    networks:
+      - internal_net
+      - external_net
+    environment:
+      - DB_URI=mongodb://admin:password@database-container:27017
+      - DB_NAME=learning_app_db
+      - CACHE_URI=redis://redis-cache:6379
+      - APP_PORT=3000
+    restart: unless-stopped
+
+  # MongoDB service
+  database:
+    image: mongodb/mongodb-community-server:6.0.3-ubi8
+    container_name: database-container
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=password
+    networks:
+      - internal_net
+    restart: unless-stopped
+
+  # Redis service
+  redis_cache:
+    image: redis:7.4-rc2-alpine
+    container_name: redis-cache
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
+    volumes:
+      - ./redis-config/redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - internal_net
+    restart: unless-stopped
+
+  # RedisInsight for monitoring
+  redis_monitor:
+    image: redislabs/redisinsight:latest
+    container_name: redis-monitor
+    ports:
+      - "5555:5540"
+    environment:
+      - REDIS_HOST=redis_cache
+      - REDIS_PORT=6379
+    networks:
+      - internal_net
+      - external_net
+    restart: unless-stopped
+
+volumes:
+  mongo_data:
+    name: mongo_data
+    driver: local
+
+networks:
+  external_net:
+  internal_net:
+    internal: true
