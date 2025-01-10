@@ -9,13 +9,14 @@ services:
     environment:
       - MONGODB_URI=mongodb://admin:password@database:27017
       - MONGODB_DB_NAME=learning_app_db
-      - REDIS_URI=redis://redis-cache:6379
+      - REDIS_URI=redis://redis_cache:6379
       - PORT=3000
     volumes:
       - .:/app
     restart: unless-stopped
     depends_on:
       - database
+      - redis_cache
     networks:
       - default
 
@@ -36,7 +37,7 @@ services:
 
   # Redis service
   redis_cache:
-    image: redis:7.4-rc2-alpine
+    image: redis:8.0-M02-alpine
     container_name: redis-cache
     ports:
       - "6379:6379"
@@ -44,6 +45,8 @@ services:
     volumes:
       - ./redis-config/redis.conf:/usr/local/etc/redis/redis.conf
     restart: unless-stopped
+    networks:
+      - default
 
   # RedisInsight for monitoring
   redis_monitor:
@@ -55,6 +58,9 @@ services:
       - REDIS_HOST=redis_cache
       - REDIS_PORT=6379
     restart: unless-stopped
+    networks:
+      - default
+
 volumes:
   mongo_data:
     name: mongo_data
