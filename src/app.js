@@ -13,8 +13,8 @@ const app = express();
 async function startServer() {
   try {
     // Initialiser les connexions aux bases de données
-    // await db.connectMongo();
-    // await db.connectRedis();
+    await db.connectMongo();
+    await db.connectRedis();
 
     // // Configurer les middlewares Express
     // app.use(express.json());
