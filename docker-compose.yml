@@ -6,22 +6,18 @@ services:
     container_name: learning-app
     ports:
       - "3000:3000"
-    depends_on:
-      - database
-      - redis_cache
-    networks:
-      - internal_net
-      - external_net
     environment:
       - DB_URI=mongodb://admin:password@database-container:27017
       - DB_NAME=learning_app_db
       - CACHE_URI=redis://redis-cache:6379
       - APP_PORT=3000
+    volumes:
+      - .:/app
     restart: unless-stopped
 
   # MongoDB service
   database:
-    image: mongodb/mongodb-community-server:6.0.3-ubi8
+    image: mongodb/mongodb-community-server
     container_name: database-container
     ports:
       - "27017:27017"
@@ -30,8 +26,6 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=password
-    networks:
-      - internal_net
     restart: unless-stopped
 
   # Redis service
@@ -43,8 +37,6 @@ services:
     command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
     volumes:
       - ./redis-config/redis.conf:/usr/local/etc/redis/redis.conf
-    networks:
-      - internal_net
     restart: unless-stopped
 
   # RedisInsight for monitoring
@@ -56,17 +48,8 @@ services:
     environment:
       - REDIS_HOST=redis_cache
       - REDIS_PORT=6379
-    networks:
-      - internal_net
-      - external_net
     restart: unless-stopped
-
 volumes:
   mongo_data:
     name: mongo_data
     driver: local
-
-networks:
-  external_net:
-  internal_net:
-    internal: true
