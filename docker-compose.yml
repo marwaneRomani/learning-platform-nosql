@@ -7,17 +7,21 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DB_URI=mongodb://admin:password@database-container:27017
-      - DB_NAME=learning_app_db
-      - CACHE_URI=redis://redis-cache:6379
-      - APP_PORT=3000
+      - MONGODB_URI=mongodb://admin:password@database:27017
+      - MONGODB_DB_NAME=learning_app_db
+      - REDIS_URI=redis://redis-cache:6379
+      - PORT=3000
     volumes:
       - .:/app
     restart: unless-stopped
+    depends_on:
+      - database
+    networks:
+      - default
 
   # MongoDB service
   database:
-    image: mongodb/mongodb-community-server
+    image: mongo:6-jammy
     container_name: database-container
     ports:
       - "27017:27017"
@@ -27,6 +31,8 @@ services:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=password
     restart: unless-stopped
+    networks:
+      - default
 
   # Redis service
   redis_cache:
@@ -53,3 +59,7 @@ volumes:
   mongo_data:
     name: mongo_data
     driver: local
+
+networks:
+  default:
+    name: my-app-network
