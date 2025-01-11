@@ -6,9 +6,10 @@ const config = require('./config/env');
 const db = require('./config/db');
 
 const courseRoutes = require('./routes/courseRoutes');
-//const studentRoutes = require('./routes/studentRoutes');
+const studentRoutes = require('./routes/studentRoutes');
 
 const app = express();
+
 
 async function startServer() {
   try {
@@ -16,16 +17,16 @@ async function startServer() {
     await db.connectMongo();
     await db.connectRedis();
 
+
     // // Configurer les middlewares Express
-    // app.use(express.json());
-    // app.use(express.urlencoded({ extended: true }));
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
 
     // // Monter les routes
-    // app.use('/api/courses', courseRoutes);
-    // app.use('/api/students', studentRoutes);
+    app.use('/api/courses', courseRoutes);
+    app.use('/api/students', studentRoutes);
 
     app.get("/", (req, res, next) => {
-
       res.json({ message: "test" })
     })
 

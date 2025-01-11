@@ -10,6 +10,9 @@ const config = require('./env');
 let mongoClient, redisClient, db;
 
 async function connectMongo() {
+
+  console.log(config.mongodb.uri, " : ", config.mongodb.dbName);
+
   try {
     mongoClient = new MongoClient(config.mongodb.uri, { useNewUrlParser: true, useUnifiedTopology: true });
     await mongoClient.connect();
@@ -22,6 +25,7 @@ async function connectMongo() {
 }
 
 async function connectRedis() {
+
   try {
     redisClient = redis.createClient({ url: config.redis.uri });
     redisClient.on('error', (err) => console.error('Erreur Redis :', err));
