@@ -5,12 +5,12 @@ services:
       dockerfile: Dockerfile
     container_name: learning-app
     ports:
-      - "3000:3000"
+      - "3001:3001"
     environment:
       - MONGODB_URI=mongodb://admin:password@database:27017
       - MONGODB_DB_NAME=learning_app_db
       - REDIS_URI=redis://redis_cache:6379
-      - PORT=3000
+      - PORT=3001
     volumes:
       - .:/app
     restart: unless-stopped
