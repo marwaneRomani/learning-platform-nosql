@@ -16,6 +16,16 @@ Ce fichier configure les services nécessaires pour l'application:
 
 ## Documentation acvec `swagger-ui`
 
+![alt text](image.png)
+
+![alt text](image-1.png)
+
+![alt text](image-3.png)
+
+![alt text](image-4.png)
+
+**On peut "executé les mêmes requêtes pour la collectin `Student` en utilisant `swagger-ui`**
+
 # Réponses aux questions
 
 **app.js :**
