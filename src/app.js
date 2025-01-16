@@ -1,22 +1,16 @@
 const express = require('express');
+
+const swaggerUi = require('swagger-ui-express');
+
+const fs = require('fs');
+const path = require('path');
+
+const swaggerDocument = JSON.parse(fs.readFileSync(path.join(__dirname, '/docs/swagger.json'), 'utf8'));
+
+
 const config = require('./config/env');
 const db = require('./config/db');
 
-const swaggerJsDoc = require('swagger-jsdoc');
-const swaggerUi = require('swagger-ui-express');
-
-const swaggerOptions = {
-  swaggerDefinition: {
-    info: {
-      title: 'Course Management API',
-      description: 'API for managing courses',
-      version: '1.0.0',
-    },
-  },
-  apis: ['./routes/courseRoutes.js', './docs/courseSwagger.js'],
-};
-
-const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
 
 const courseRoutes = require('./routes/courseRoutes');
@@ -34,7 +28,8 @@ async function startServer() {
 
 
 
-    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+    // Swagger UI route
+    app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
     // // Configurer les middlewares Express
     app.use(express.json());
